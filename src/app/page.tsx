@@ -1,24 +1,31 @@
-
-import Button from "@/app/component/atoms/button";
-
+"use client";
+import React, { useState } from "react"
+import ToggleText from "@/app/component/molecule/ToggleText"
+import SignIn from '@/app/auth/Login/page'
+import SignUp from '@/app/auth/Register/page'
 export default function Home() {
+  const [isSignUp, setIsSignUp] = useState(false);
+
+  const toggleForm = () => {
+    setIsSignUp((prev) => !prev);
+  }
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <h2 className="text-3xl font-bold text-center sm:text-left">
-          <div className="flex flex-col gap-4">
-            Welcome to the Next.js App! fin
-            <Button text="Fredy" />
-            <Button text="Santiago" />
-            <Button text="Gonzalez" />
-            <Button text="Developer" />
-          </div>
-          
-        </h2>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        
-      </footer>
+    <div
+      className="h-screen w-screen bg-cover bg-center"
+    >
+      <div className="h-full w-full flex flex-col justify-center items-center lg:ml-20 lg:max-w-sm">
+        <p className="!text-fuchsia-600 text-4xl font-bold text-center">
+          Bienvenid@
+        </p>
+        <div className="lg:mb-15 w-full max-w-xl flex flex-col items-center my-10 lg:my-0">
+          {isSignUp ? <SignUp /> : <SignIn />}
+          <ToggleText
+            toggleForm={toggleForm}
+            isSignUp={isSignUp}
+          />
+        </div>
+      </div>
     </div>
-  );
+  )
 }
