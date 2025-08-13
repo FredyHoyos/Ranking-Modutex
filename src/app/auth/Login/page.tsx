@@ -5,7 +5,7 @@ import SignIn from '@/app/component/auth/SigninForm'
 export default function Login() {
   return (
     <Container size="1" height="100%" className='w-full p-6'>
-        <SignIn />
+        <SignIn/>
     </Container>
   )
 }

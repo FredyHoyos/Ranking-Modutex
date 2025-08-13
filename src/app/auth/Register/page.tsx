@@ -1,12 +1,11 @@
 import React from 'react'
+import { Container, Heading } from '@radix-ui/themes'
+import SignupForm from '@/app/component/auth/SignupForm'
 
-const page = () => {
+export default function Register() {
   return (
-    <div>
-      Hola mundo
-      <p className='text-yellow-300'>Esta es la página de registro</p>
-    </div>
-  )
+    <Container size="1" height="100%" className="w-full p-6">
+        <SignupForm />
+    </Container>
+  );
 }
-
-export default page
