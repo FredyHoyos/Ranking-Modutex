@@ -1,9 +1,11 @@
+
 // app/dashboard/page.tsx
-import { getSession } from "next-auth/react";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/libs/authOptions";
 
 export default async function DashboardPage() {
   // opcional: verificar sesión
-  const session = await getSession();
+  const session = await getServerSession(authOptions);
   if (!session) return <p>Acceso no autorizado</p>;
 
   return (
