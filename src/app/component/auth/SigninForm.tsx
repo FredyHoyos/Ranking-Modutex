@@ -3,15 +3,15 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { signIn } from "next-auth/react";
-import { EnvelopeClosedIcon, LockClosedIcon } from "@radix-ui/react-icons";
+import { PersonIcon , LockClosedIcon } from "@radix-ui/react-icons";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
+
 
 // 📌 Esquema de validación con Yup
 const SigninSchema = Yup.object().shape({
   email: Yup.string()
-    .email("Correo inválido")
-    .required("El correo es obligatorio"),
+    .required("El nombre de usuario es obligatorio"),
   password: Yup.string()
     .min(4, "La contraseña debe tener mínimo 4 caracteres")
     .required("La contraseña es obligatoria"),
@@ -52,28 +52,29 @@ export default function SigninForm() {
   };
 
   return (
-    <div className="flex justify-center p-6 rounded-2xl items-center bg-gradient-to-br from-orange-100 to-yellow-200">
+    
+    <div className="rounded-xl flex justify-center p-6 items-center">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="bg-white w-full max-w-md p-8 rounded-2xl shadow-lg border border-gray-100"
+        className="led-border bg-white/50 backdrop-blur-md border border-white/40 shadow-lg rounded-lg p-4 text-center w-full max-w-md "
       >
         <h2 className="text-2xl font-bold text-gray-800 text-center mb-6">
           Inicia Sesión
         </h2>
 
-        {/* 📧 Email */}
-        <label htmlFor="email" className="text-gray-700 font-medium">
-          Correo
+        {/* 📧 User */}
+        <label htmlFor="user" className=" font-medium">
+          Nombre de usuario
         </label>
         <div className="relative mt-1">
-          <EnvelopeClosedIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <PersonIcon  className="absolute left-3 top-1/2 -translate-y-1/2 " />
           <input
-            id="email"
-            type="email"
-            placeholder="email@domain.com"
+            id="user"
+            type="string"
+            placeholder="Nombre de usuario"
             autoComplete="email"
             {...register("email")}
-            className="w-full pl-10 pr-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-400 focus:border-orange-400 outline-none"
+            className="w-full pl-10 pr-3 py-2 rounded-lg border  focus:ring-2 focus:ring-orange-400 focus:border-orange-400 outline-none"
           />
         </div>
         {errors.email && (
@@ -83,19 +84,19 @@ export default function SigninForm() {
         {/* 🔒 Password */}
         <label
           htmlFor="password"
-          className="text-gray-700 font-medium mt-4 block"
+          className=" font-medium mt-4 block"
         >
           Contraseña
         </label>
         <div className="relative mt-1">
-          <LockClosedIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <LockClosedIcon className="absolute left-3 top-1/2 -translate-y-1/2 " />
           <input
             id="password"
             type="password"
             placeholder="********"
             autoComplete="current-password"
             {...register("password")}
-            className="w-full pl-10 pr-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-400 focus:border-orange-400 outline-none"
+            className="w-full pl-10 pr-3 py-2 rounded-lg border  focus:ring-2 focus:ring-orange-400 focus:border-orange-400 outline-none"
           />
         </div>
         {errors.password && (
@@ -116,5 +117,6 @@ export default function SigninForm() {
         </button>
       </form>
     </div>
+    
   );
 }
