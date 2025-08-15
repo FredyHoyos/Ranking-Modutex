@@ -22,3 +22,13 @@ model User {
   password String
   role     String  @default("user")
 }
+
+
+model Referencia {
+  id          Int     @id @default(autoincrement())
+  referencia  Int
+  op          Int
+  operaciones Int
+  tiempo      Float
+  createdAt   DateTime @default(now())
+}

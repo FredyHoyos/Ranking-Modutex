@@ -8,7 +8,7 @@ import Navbar from "@/app/component/Navbar";
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <SessionProvider>
-      <div className="flex min-h-screen bg-gray-100">
+      <div className="flex min-h-screen h-max bg-gray-100">
         {/* 📌 Sidebar */}
         <Sidebar />
 

@@ -7,7 +7,7 @@ export default function Navbar() {
   const { data: session } = useSession();
 
   return (
-    <header className="bg-white shadow-md px-6 py-3 flex justify-between items-center">
+  <header className="pl-16 bg-white shadow-md px-6 py-3 flex flex-col md:flex-row justify-between items-start">
       {/* 📌 Título o breadcrumb */}
       <h1 className="text-xl font-bold text-gray-800">Panel de Control</h1>
 
