@@ -2,10 +2,28 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { HomeIcon, BarChartIcon, PersonIcon, GearIcon, Link2Icon, HamburgerMenuIcon, Cross1Icon } from "@radix-ui/react-icons";
+import { usePathname } from "next/navigation";
+import {
+  HomeIcon,
+  BarChartIcon,
+  PersonIcon,
+  GearIcon,
+  Link2Icon,
+  HamburgerMenuIcon,
+  Cross1Icon,
+} from "@radix-ui/react-icons";
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname(); // 📌 Detecta la ruta actual
+
+  const links = [
+    { href: "/dashboard", label: "Inicio", icon: <HomeIcon /> },
+    { href: "/dashboard/analytics", label: "Analíticas", icon: <BarChartIcon /> },
+    { href: "/dashboard/users", label: "Operarios", icon: <PersonIcon /> },
+    { href: "/dashboard/references", label: "Referencias", icon: <Link2Icon /> },
+    { href: "/dashboard/settings", label: "Configuración", icon: <GearIcon /> },
+  ];
 
   return (
     <>
@@ -14,7 +32,7 @@ export default function Sidebar() {
         className="md:hidden fixed top-4 left-4 z-50 p-2 bg-orange-500 text-white rounded shadow-lg"
         onClick={() => setIsOpen(!isOpen)}
       >
-        {isOpen ? <Cross1Icon className="w-6 h-6"/> : <HamburgerMenuIcon className="w-6 h-6"/>}
+        {isOpen ? <Cross1Icon className="w-6 h-6" /> : <HamburgerMenuIcon className="w-6 h-6" />}
       </button>
 
       {/* Sidebar */}
@@ -28,21 +46,20 @@ export default function Sidebar() {
       >
         <h2 className="text-2xl font-bold text-orange-500 mb-6">Dashboard</h2>
         <nav className="flex flex-col gap-4">
-          <Link href="/dashboard" className="flex items-center gap-2 hover:text-orange-500" onClick={() => setIsOpen(false)}>
-            <HomeIcon /> Inicio
-          </Link>
-          <Link href="/dashboard/analytics" className="flex items-center gap-2 hover:text-orange-500" onClick={() => setIsOpen(false)}>
-            <BarChartIcon /> Analíticas
-          </Link>
-          <Link href="/dashboard/users" className="flex items-center gap-2 hover:text-orange-500" onClick={() => setIsOpen(false)}>
-            <PersonIcon /> Operarios
-          </Link>
-          <Link href="/dashboard/references" className="flex items-center gap-2 hover:text-orange-500" onClick={() => setIsOpen(false)}>
-            <Link2Icon /> Referencias
-          </Link>
-          <Link href="/dashboard/settings" className="flex items-center gap-2 hover:text-orange-500" onClick={() => setIsOpen(false)}>
-            <GearIcon /> Configuración
-          </Link>
+          {links.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={`flex items-center gap-2 px-2 py-1 rounded transition ${
+                pathname === link.href
+                  ? "text-white bg-orange-500 font-semibold"
+                  : "hover:text-orange-500"
+              }`}
+              onClick={() => setIsOpen(false)}
+            >
+              {link.icon} {link.label}
+            </Link>
+          ))}
         </nav>
       </aside>
 

@@ -68,6 +68,8 @@ export default function ModalEditarReferencia({
         </h2>
 
         <div className="flex flex-col gap-4">
+          <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Referencia*</label>
           <input
             type="number"
             value={referencia}
@@ -75,6 +77,9 @@ export default function ModalEditarReferencia({
             placeholder="Referencia"
             className="border p-2 rounded w-full"
           />
+          </div>
+          <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">OP</label>
           <input
             type="number"
             value={op}
@@ -82,6 +87,9 @@ export default function ModalEditarReferencia({
             placeholder="OP"
             className="border p-2 rounded w-full"
           />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Número de operaciones*</label>
           <input
             type="number"
             value={operaciones}
@@ -89,6 +97,9 @@ export default function ModalEditarReferencia({
             placeholder="Número de operaciones"
             className="border p-2 rounded w-full"
           />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Tiempo*</label>
           <input
             type="number"
             step="0.01"
@@ -97,6 +108,7 @@ export default function ModalEditarReferencia({
             placeholder="Tiempo"
             className="border p-2 rounded w-full"
           />
+          </div>
         </div>
 
         <div className="flex justify-end gap-3 mt-4">

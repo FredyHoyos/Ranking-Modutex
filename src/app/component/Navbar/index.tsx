@@ -20,7 +20,7 @@ export default function Navbar() {
             </span>
             <button
               onClick={() => signOut({ callbackUrl: "/" })}
-              className="flex items-center gap-1 text-sm font-medium text-red-500 hover:text-red-600 transition"
+              className="cursor-pointer flex items-center gap-1 text-sm font-medium text-red-500 hover:text-red-600 transition hover:bg-amber-100 px-2 py-1 rounded"
             >
               <ExitIcon /> Salir
             </button>

@@ -12,6 +12,7 @@ interface Referencia {
   op: number;
   operaciones: number;
   tiempo: number;
+  mostrar: boolean;
 }
 
 export default function PageReferencias() {
@@ -43,6 +44,24 @@ export default function PageReferencias() {
     }
   };
 
+  const toggleMostrar = async (id: number, value: boolean) => {
+  try {
+    const res = await fetch(`/api/referencias/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ mostrar: value }),
+    });
+
+    if (!res.ok) throw new Error("Error actualizando referencia");
+
+    fetchReferencias(); // refresca la tabla
+  } catch (error) {
+    console.error(error);
+    alert("No se pudo actualizar el estado");
+  }
+};
+
+
   useEffect(() => {
     fetchReferencias();
   }, []);
@@ -62,13 +81,15 @@ export default function PageReferencias() {
 
 
       <TablaReferencias
-        data={referencias}
-        onEdit={(ref) => {
-          setSelectedRef(ref);
-          setIsEditModalOpen(true);
-        }}
-        onDelete={eliminarReferencia}
-      />
+      data={referencias}
+      onEdit={(ref) => {
+        setSelectedRef(ref);
+        setIsEditModalOpen(true);
+      }}
+      onDelete={eliminarReferencia}
+      onToggleMostrar={toggleMostrar} // 👈 acá
+    />
+
 
       <ModalReferencia
         isOpen={isModalOpen}

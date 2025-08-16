@@ -1,5 +1,5 @@
 // src/libs/authOptions.ts
-import { NextAuthOptions } from "next-auth";
+import { NextAuthOptions, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "@/libs/prisma";
 import bcrypt from "bcryptjs";
@@ -9,25 +9,28 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "credentials",
       credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
+        name: { label: "Nombre de usuario", type: "text" },
+        password: { label: "Contraseña", type: "password" },
       },
-      async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) throw new Error("Email and password required");
+      async authorize(credentials): Promise<User | null> {
+        if (!credentials?.name || !credentials?.password) {
+          throw new Error("Nombre y contraseña requeridos");
+        }
 
+        // Buscar usuario por nombre
         const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
+          where: { name: credentials.name },
         });
 
-        if (!user) throw new Error("Invalid credentials");
+        if (!user) throw new Error("Credenciales inválidas");
 
         const validPassword = await bcrypt.compare(credentials.password, user.password);
-        if (!validPassword) throw new Error("Invalid credentials");
+        if (!validPassword) throw new Error("Credenciales inválidas");
 
+        // Retornamos tipado como User
         return {
           id: user.id.toString(),
           name: user.name,
-          email: user.email,
           role: user.role,
         };
       },
@@ -37,7 +40,8 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.role = user.role;
+        token.role = (user as User).role; // 👈 casteo seguro
+        token.name = user.name;
       }
       return token;
     },
@@ -45,6 +49,7 @@ export const authOptions: NextAuthOptions = {
       if (session.user) {
         session.user.id = token.id as string;
         session.user.role = token.role as string;
+        session.user.name = token.name as string;
       }
       return session;
     },

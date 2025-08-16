@@ -7,10 +7,9 @@ import { PersonIcon , LockClosedIcon } from "@radix-ui/react-icons";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 
-
 // 📌 Esquema de validación con Yup
 const SigninSchema = Yup.object().shape({
-  email: Yup.string()
+  name: Yup.string()
     .required("El nombre de usuario es obligatorio"),
   password: Yup.string()
     .min(4, "La contraseña debe tener mínimo 4 caracteres")
@@ -18,7 +17,7 @@ const SigninSchema = Yup.object().shape({
 });
 
 interface SigninFormInputs {
-  email: string;
+  name: string;
   password: string;
 }
 
@@ -38,7 +37,7 @@ export default function SigninForm() {
 
     const result = await signIn("credentials", {
       redirect: false, 
-      email: data.email,
+      name: data.name,  // 👈 ahora usamos "name"
       password: data.password,
     });
 
@@ -52,7 +51,6 @@ export default function SigninForm() {
   };
 
   return (
-    
     <div className="rounded-xl flex justify-center p-6 items-center">
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -62,30 +60,27 @@ export default function SigninForm() {
           Inicia Sesión
         </h2>
 
-        {/* 📧 User */}
-        <label htmlFor="user" className=" font-medium">
+        {/* 👤 Nombre de usuario */}
+        <label htmlFor="name" className="font-medium">
           Nombre de usuario
         </label>
         <div className="relative mt-1">
-          <PersonIcon  className="absolute left-3 top-1/2 -translate-y-1/2 " />
+          <PersonIcon className="absolute left-3 top-1/2 -translate-y-1/2 " />
           <input
-            id="user"
-            type="string"
+            id="name"
+            type="text"
             placeholder="Nombre de usuario"
-            autoComplete="email"
-            {...register("email")}
+            autoComplete="username"
+            {...register("name")}
             className="w-full pl-10 pr-3 py-2 rounded-lg border  focus:ring-2 focus:ring-orange-400 focus:border-orange-400 outline-none"
           />
         </div>
-        {errors.email && (
-          <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
+        {errors.name && (
+          <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
         )}
 
         {/* 🔒 Password */}
-        <label
-          htmlFor="password"
-          className=" font-medium mt-4 block"
-        >
+        <label htmlFor="password" className="font-medium mt-4 block">
           Contraseña
         </label>
         <div className="relative mt-1">
@@ -117,6 +112,5 @@ export default function SigninForm() {
         </button>
       </form>
     </div>
-    
   );
 }

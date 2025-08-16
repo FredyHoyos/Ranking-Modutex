@@ -23,3 +23,26 @@ export async function DELETE(_: Request, { params }: { params: { id: string } })
   });
   return NextResponse.json({ message: "Referencia eliminada" });
 }
+
+export async function PATCH(
+  req: Request,
+  context: { params: Promise<{ id: string }> } // 👈 params es una Promise
+) {
+  try {
+    const body = await req.json();
+
+    const { id } = await context.params; // 👈 aquí lo esperas
+    const updated = await prisma.referencia.update({
+      where: { id: Number(id) },
+      data: { mostrar: body.mostrar },
+    });
+
+    return NextResponse.json(updated);
+  } catch (error) {
+    console.error("Error en PATCH:", error);
+    return NextResponse.json(
+      { error: "Error actualizando referencia" },
+      { status: 500 }
+    );
+  }
+}

@@ -9,15 +9,22 @@ interface Referencia {
   op: number;
   operaciones: number;
   tiempo: number;
+  mostrar: boolean;
 }
 
 interface TablaReferenciasProps {
   data: Referencia[];
   onEdit: (ref: Referencia) => void;
   onDelete: (id: number) => void;
+  onToggleMostrar: (id: number, value: boolean) => void; // 👈 nuevo prop
 }
 
-export default function TablaReferencias({ data, onEdit, onDelete }: TablaReferenciasProps) {
+export default function TablaReferencias({
+  data,
+  onEdit,
+  onDelete,
+  onToggleMostrar,
+}: TablaReferenciasProps) {
   if (data.length === 0) {
     return (
       <div className="bg-gray-50 border border-gray-200 p-6 rounded-lg text-center text-gray-500">
@@ -35,6 +42,7 @@ export default function TablaReferencias({ data, onEdit, onDelete }: TablaRefere
             <th className="p-3 text-left">OP</th>
             <th className="p-3 text-center"># Operaciones</th>
             <th className="p-3 text-center">Tiempo (min)</th>
+            <th className="p-3 text-center">Mostrar</th>
             <th className="p-3 text-center">Acciones</th>
           </tr>
         </thead>
@@ -48,6 +56,16 @@ export default function TablaReferencias({ data, onEdit, onDelete }: TablaRefere
               <td className="p-3">{ref.op}</td>
               <td className="p-3 text-center">{ref.operaciones}</td>
               <td className="p-3 text-center">{ref.tiempo.toFixed(2)}</td>
+              <td className="p-3 text-center">
+                <input
+                  type="checkbox"
+                  checked={ref.mostrar}
+                  onChange={(e) =>
+                    onToggleMostrar(ref.id, e.target.checked) // 👈 cambia DB
+                  }
+                  className="cursor-pointer"
+                />
+              </td>
               <td className="p-3 text-center flex justify-center gap-3">
                 <button
                   onClick={() => onEdit(ref)}

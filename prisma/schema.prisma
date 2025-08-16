@@ -17,8 +17,7 @@ datasource db {
 
 model User {
   id       Int     @id @default(autoincrement())
-  name     String?
-  email    String  @unique
+  name     String @unique
   password String
   role     String  @default("user")
 }
@@ -31,4 +30,5 @@ model Referencia {
   operaciones Int
   tiempo      Float
   createdAt   DateTime @default(now())
+  mostrar     Boolean  @default(true)
 }
