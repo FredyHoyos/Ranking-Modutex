@@ -1,19 +1,29 @@
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="bg-[url('/hilo.png')] h-screen w-screen bg-cover bg-center">
-      <div className="h-full w-full flex flex-col justify-center items-center">
-        <p className="!text-fuchsia-900 text-4xl font-bold text-center bg-amber-500/60 backdrop-blur-md border border-white shadow-lg rounded-lg p-4">
-          Bienvenid@
-        </p>
-
-        <div className="lg:mb-15 w-full max-w-xl flex flex-col items-center my-10 lg:my-0">
-          {children}
+        <div className="flex flex-col min-h-screen w-full bg-gradient-to-br from-pink-100 via-orange-100 to-rose-200">
+          <main className="flex flex-col md:flex-row items-center justify-start flex-grow w-full px-6 md:px-14">
+            
+                    {/* 📌 Logo */}
+            <div className="md:w-1/2 flex justify-center items-center p-7">
+              <img
+                src="/modutex.png"
+                alt="Modutex Logo"
+                className="max-w-xs md:max-w-full h-auto object-contain"
+              />
+            </div>
+            
+            {/* 📌 Login */}
+            <div className="flex justify-center items-center w-full md:w-1/2 mt-6 md:mt-0">
+              <div className="w-full max-w-md">
+                {children}
+              </div>
+            </div>
+          </main>
+    
+          {/* 📌 Footer */}
+          <footer className="text-sm bg-white/40 backdrop-blur-md border border-white/50 shadow-md rounded-lg p-3 text-center">
+            © {new Date().getFullYear()} <span className="font-bold">Modutex</span>. Hecho por Fredy Hoyos.
+          </footer>
         </div>
-
-        <footer className="text-sm mt-4 bg-white/30 backdrop-blur-md border border-white/40 shadow-lg rounded-lg p-4 text-center">
-          © {new Date().getFullYear()} Modutex. Hecho por Fredy Hoyos.
-        </footer>
-      </div>
-    </div>
   );
 }
