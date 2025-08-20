@@ -9,14 +9,14 @@ import * as Yup from "yup";
 
 // 📌 Esquema de validación con Yup
 const SigninSchema = Yup.object().shape({
-  name: Yup.string().required("El nombre de usuario es obligatorio"),
+  username: Yup.string().required("El nombre de usuario es obligatorio"),
   password: Yup.string()
     .min(4, "La contraseña debe tener mínimo 4 caracteres")
     .required("La contraseña es obligatoria"),
 });
 
 interface SigninFormInputs {
-  name: string;
+  username: string;
   password: string;
 }
 
@@ -36,7 +36,7 @@ export default function SigninForm() {
 
     const result = await signIn("credentials", {
       redirect: false,
-      name: data.name,
+      username: data.username,
       password: data.password,
     });
 
@@ -60,22 +60,22 @@ export default function SigninForm() {
         </h2>
 
         {/* 👤 Nombre de usuario */}
-        <label htmlFor="name" className="font-medium text-gray-700">
+        <label htmlFor="username" className="font-medium text-gray-700">
           Nombre de usuario
         </label>
         <div className="relative mt-1">
           <PersonIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-pink-600" />
           <input
-            id="name"
+            id="username"
             type="text"
             placeholder="Nombre de usuario"
             autoComplete="username"
-            {...register("name")}
+            {...register("username")}
             className="w-full pl-10 pr-3 py-2 rounded-lg border focus:ring-2 focus:ring-pink-400 focus:border-pink-400 outline-none"
           />
         </div>
-        {errors.name && (
-          <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
+        {errors.username && (
+          <p className="text-red-500 text-xs mt-1">{errors.username.message}</p>
         )}
 
         {/* 🔒 Password */}

@@ -9,17 +9,17 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "credentials",
       credentials: {
-        name: { label: "Nombre de usuario", type: "text" },
+        username: { label: "Nombre de usuario", type: "text" },
         password: { label: "Contraseña", type: "password" },
       },
       async authorize(credentials): Promise<User | null> {
-        if (!credentials?.name || !credentials?.password) {
-          throw new Error("Nombre y contraseña requeridos");
+        if (!credentials?.username || !credentials?.password) {
+          throw new Error("Nombre de usuario y contraseña requeridos");
         }
 
-        // Buscar usuario por nombre
+        // Buscar usuario por username
         const user = await prisma.user.findUnique({
-          where: { name: credentials.name },
+          where: { username: credentials.username },
         });
 
         if (!user) throw new Error("Credenciales inválidas");
@@ -40,7 +40,7 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.role = (user as User).role; // 👈 casteo seguro
+        token.role = (user as User).role;
         token.name = user.name;
       }
       return token;
@@ -48,7 +48,7 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
-        session.user.role = token.role as string;
+        session.user.role = token.role as "ADMIN" | "USER";
         session.user.name = token.name as string;
       }
       return session;

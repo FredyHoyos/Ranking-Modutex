@@ -12,7 +12,6 @@ interface ModalEditarOperarioProps {
     numeroId: string;
     porcentaje: number;
     username: string;
-    password: string; // ⚠️ sin encriptar
   } | null;
 }
 
@@ -34,22 +33,29 @@ export default function ModalEditarOperario({
       setNumeroId(operarioData.numeroId);
       setPorcentaje(operarioData.porcentaje.toString());
       setUsername(operarioData.username);
-      setPassword(operarioData.password);
+      setPassword(""); // ⚠️ siempre vacío
     }
   }, [operarioData]);
 
   const handleSubmit = async () => {
     try {
+      // Construir objeto de actualización
+      const updates: any = {
+        nombre,
+        numeroId,
+        porcentaje: parseInt(porcentaje) || 0,
+        username,
+      };
+
+      // Solo incluir password si se escribió algo
+      if (password.trim() !== "") {
+        updates.password = password;
+      }
+
       const res = await fetch(`/api/operarios/${operarioData?.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          nombre,
-          numeroId,
-          porcentaje: parseInt(porcentaje) || 0,
-          username,
-          password, // ⚠️ guardado plano
-        }),
+        body: JSON.stringify(updates),
       });
 
       if (!res.ok) throw new Error("Error actualizando operario");
@@ -84,6 +90,7 @@ export default function ModalEditarOperario({
               className="border p-2 rounded w-full"
             />
           </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Número de ID*
@@ -96,6 +103,7 @@ export default function ModalEditarOperario({
               className="border p-2 rounded w-full"
             />
           </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Porcentaje
@@ -108,6 +116,7 @@ export default function ModalEditarOperario({
               className="border p-2 rounded w-full"
             />
           </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Usuario*
@@ -120,15 +129,16 @@ export default function ModalEditarOperario({
               className="border p-2 rounded w-full"
             />
           </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Contraseña*
+              Contraseña
             </label>
             <input
-              type="text"
+              type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="******"
+              placeholder="Dejar vacío para no cambiar"
               className="border p-2 rounded w-full"
             />
           </div>

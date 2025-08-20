@@ -5,27 +5,48 @@ import TablaOperarios from "@/app/component/TablaOperarios";
 import ModalOperario from "@/app/component/ModalOperario";
 import ModalEditarOperario from "@/app/component/ModalEditarOperario";
 
-interface Operario {
+// ✅ Tipo para la UI (tabla y modales)
+interface OperarioUI {
   id: number;
   nombre: string;
   numeroId: string;
   porcentaje: number;
   username: string;
-  password: string;
+}
+
+// ✅ Tipo que viene del backend
+interface OperarioBackend {
+  id: number;
+  numeroId: string;
+  porcentaje: number;
+  user: {
+    name: string;
+    username: string;
+  };
 }
 
 export default function PageOperarios() {
-  const [operarios, setOperarios] = useState<Operario[]>([]);
+  const [operarios, setOperarios] = useState<OperarioUI[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [selectedOperario, setSelectedOperario] = useState<Operario | null>(null);
+  const [selectedOperario, setSelectedOperario] = useState<OperarioUI | null>(null);
 
   // 🔹 Obtener todos los operarios
   const fetchOperarios = async () => {
     try {
       const res = await fetch("/api/operarios");
-      const data = await res.json();
-      setOperarios(data);
+      const data: OperarioBackend[] = await res.json();
+
+      // 🔹 Transformar datos para que coincidan con la interfaz de la UI
+      const formatted: OperarioUI[] = data.map((op) => ({
+        id: op.id,
+        numeroId: op.numeroId,
+        porcentaje: op.porcentaje,
+        nombre: op.user.name,
+        username: op.user.username,
+      }));
+
+      setOperarios(formatted);
     } catch (error) {
       console.error("Error cargando operarios:", error);
     }
@@ -46,7 +67,7 @@ export default function PageOperarios() {
   };
 
   // 🔹 Editar porcentaje u otros campos
-  const actualizarOperario = async (id: number, updates: Partial<Operario>) => {
+  const actualizarOperario = async (id: number, updates: Partial<OperarioUI>) => {
     try {
       const res = await fetch(`/api/operarios/${id}`, {
         method: "PATCH",
@@ -83,7 +104,7 @@ export default function PageOperarios() {
       <TablaOperarios
         data={operarios}
         onEdit={(op) => {
-          setSelectedOperario(op);
+          setSelectedOperario(op); // ya está en el formato de la UI
           setIsEditModalOpen(true);
         }}
         onDelete={eliminarOperario}

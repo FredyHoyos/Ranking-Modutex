@@ -1,20 +1,32 @@
 import { prisma } from "@/libs/prisma";
 import { NextResponse } from "next/server";
+import bcrypt from "bcryptjs";
 
-// ✅ PUT → editar operario completo
+// ✅ PUT → editar operario completo (y su User asociado)
 export async function PUT(req: Request, { params }: { params: { id: string } }) {
   try {
     const body = await req.json();
+
+    if (body.password) {
+      body.password = await bcrypt.hash(body.password, 10);
+    }
+
     const actualizado = await prisma.operario.update({
       where: { id: Number(params.id) },
       data: {
-        nombre: body.nombre,
         numeroId: body.numeroId,
         porcentaje: body.porcentaje,
-        username: body.username,
-        password: body.password, // ⚠️ plano
+        user: {
+          update: {
+            name: body.nombre,
+            username: body.username,
+            password: body.password, // plano
+          },
+        },
       },
+      include: { user: true }, // devuelve datos completos
     });
+
     return NextResponse.json(actualizado);
   } catch (error) {
     console.error("Error en PUT /operarios/[id]:", error);
@@ -25,12 +37,19 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
   }
 }
 
-// ✅ DELETE → eliminar operario
+// ✅ DELETE → eliminar operario y su User asociado
 export async function DELETE(_: Request, { params }: { params: { id: string } }) {
   try {
-    await prisma.operario.delete({
+    const eliminado = await prisma.operario.delete({
       where: { id: Number(params.id) },
+      include: { user: true },
     });
+
+    // También eliminamos el User asociado
+    await prisma.user.delete({
+      where: { id: eliminado.userId },
+    });
+
     return NextResponse.json({ message: "Operario eliminado" });
   } catch (error) {
     console.error("Error en DELETE /operarios/[id]:", error);
@@ -41,10 +60,10 @@ export async function DELETE(_: Request, { params }: { params: { id: string } })
   }
 }
 
-// ✅ PATCH → actualizar parcialmente (ej. porcentaje)
+// ✅ PATCH → actualizar parcialmente (ej. solo porcentaje)
 export async function PATCH(
   req: Request,
-  context: { params: Promise<{ id: string }> } // 👈 params es una Promise en Next 13+
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const body = await req.json();
@@ -52,7 +71,20 @@ export async function PATCH(
 
     const updated = await prisma.operario.update({
       where: { id: Number(id) },
-      data: body, // 🔹 solo lo que le mandes
+      data: {
+        ...(body.numeroId && { numeroId: body.numeroId }),
+        ...(body.porcentaje && { porcentaje: body.porcentaje }),
+        ...(body.user && {
+          user: {
+            update: {
+              ...(body.user.name && { name: body.user.name }),
+              ...(body.user.username && { username: body.user.username }),
+              ...(body.user.password && { password: body.user.password }),
+            },
+          },
+        }),
+      },
+      include: { user: true },
     });
 
     return NextResponse.json(updated);

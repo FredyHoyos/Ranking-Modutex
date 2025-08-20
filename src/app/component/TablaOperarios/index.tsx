@@ -9,7 +9,6 @@ interface Operario {
   numeroId: string;
   porcentaje: number;
   username: string;
-  password: string;
 }
 
 interface TablaOperariosProps {

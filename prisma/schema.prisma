@@ -15,30 +15,43 @@ datasource db {
 }
 
 
-model User {
-  id       Int     @id @default(autoincrement())
-  name     String @unique
-  password String
-  role     String  @default("user")
+// Enum para controlar roles
+enum Role {
+  ADMIN
+  USER
 }
 
+// Tabla de usuarios
+model User {
+  id        Int       @id @default(autoincrement())
+  name      String
+  username  String    @unique
+  password  String
+  role      Role      @default(USER) // 👈 Operarios = USER, Admin = ADMIN
+  createdAt DateTime  @default(now())
+
+  // Relación 1-1 con Operario (solo si el usuario es un operario)
+  operario  Operario?
+}
+
+// Datos específicos de operarios
+model Operario {
+  id         Int      @id @default(autoincrement())
+  numeroId   String   @unique
+  porcentaje Int      @default(0) // 0 - 100
+  createdAt  DateTime @default(now())
+
+  // Relación con User
+  userId     Int      @unique
+  user       User     @relation(fields: [userId], references: [id])
+}
 
 model Referencia {
-  id          Int     @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   referencia  Int
   op          Int
   operaciones Int
   tiempo      Float
   createdAt   DateTime @default(now())
   mostrar     Boolean  @default(true)
-}
-
-model Operario {
-  id         Int      @id @default(autoincrement())
-  nombre     String
-  numeroId   String   @unique   // Identificación única del operario
-  porcentaje Int      @default(0) // 0 - 100
-  username   String   @unique
-  password   String
-  createdAt  DateTime @default(now())
 }
