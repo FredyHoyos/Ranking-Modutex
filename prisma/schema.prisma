@@ -32,3 +32,13 @@ model Referencia {
   createdAt   DateTime @default(now())
   mostrar     Boolean  @default(true)
 }
+
+model Operario {
+  id         Int      @id @default(autoincrement())
+  nombre     String
+  numeroId   String   @unique   // Identificación única del operario
+  porcentaje Int      @default(0) // 0 - 100
+  username   String   @unique
+  password   String
+  createdAt  DateTime @default(now())
+}
