@@ -50,8 +50,17 @@ model Referencia {
   id          Int      @id @default(autoincrement())
   referencia  Int
   op          Int
-  operaciones Int
+  operaciones Operacion[]
   tiempo      Float
   createdAt   DateTime @default(now())
   mostrar     Boolean  @default(true)
+}
+
+model Operacion {
+  id           Int        @id @default(autoincrement())
+  nombre       String
+  tiempo       Float
+  maquina      String
+  referenciaId Int
+  referencia   Referencia @relation(fields: [referenciaId], references: [id], onDelete: Cascade)
 }

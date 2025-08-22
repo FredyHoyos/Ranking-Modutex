@@ -11,11 +11,10 @@ interface ModalReferenciaProps {
 export default function ModalReferencia({ isOpen, onClose, onSaved }: ModalReferenciaProps) {
   const [referencia, setReferencia] = useState("");
   const [op, setOp] = useState("");
-  const [operaciones, setOperaciones] = useState("");
   const [tiempo, setTiempo] = useState("");
 
   const handleSubmit = async () => {
-    if (!referencia || !operaciones || !tiempo) {
+    if (!referencia || !tiempo) {
       alert("Todos los campos obligatorios deben ser mayores a 0");
       return;
     }
@@ -27,7 +26,6 @@ export default function ModalReferencia({ isOpen, onClose, onSaved }: ModalRefer
         body: JSON.stringify({
           referencia: parseInt(referencia),
           op: parseInt(op) || 0,
-          operaciones: parseInt(operaciones),
           tiempo: parseFloat(tiempo),
         }),
       });
@@ -38,7 +36,6 @@ export default function ModalReferencia({ isOpen, onClose, onSaved }: ModalRefer
       onClose(); // cerrar modal
       setReferencia("");
       setOp("");
-      setOperaciones("");
       setTiempo("");
     } catch (error) {
       console.error("Error guardando referencia:", error);
@@ -70,16 +67,6 @@ export default function ModalReferencia({ isOpen, onClose, onSaved }: ModalRefer
               value={op}
               placeholder="000000"
               onChange={(e) => setOp(e.target.value)}
-              className="border p-2 rounded w-full"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Número de operaciones*</label>
-            <input
-              type="number"
-              value={operaciones}
-              placeholder="14"
-              onChange={(e) => setOperaciones(e.target.value)}
               className="border p-2 rounded w-full"
             />
           </div>

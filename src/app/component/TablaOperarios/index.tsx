@@ -37,7 +37,7 @@ export default function TablaOperarios({
           <tr className="bg-blue-500 text-white text-sm uppercase tracking-wider">
             <th className="p-3 text-left">Nombre</th>
             <th className="p-3 text-left">Número ID</th>
-            <th className="p-3 text-center">Porcentaje</th>
+            <th className="p-3 text-center">% de trabajo</th>
             <th className="p-3 text-left">Usuario</th>
             <th className="p-3 text-center">Acciones</th>
           </tr>

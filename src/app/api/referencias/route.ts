@@ -4,7 +4,8 @@ import { NextResponse } from "next/server";
 // GET → listar todas las referencias
 export async function GET() {
   const referencias = await prisma.referencia.findMany({
-    orderBy: { createdAt: "desc" }
+    orderBy: { createdAt: "desc" },
+    include: { operaciones: true },
   });
   return NextResponse.json(referencias);
 }
@@ -16,9 +17,17 @@ export async function POST(req: Request) {
     data: {
       referencia: body.referencia,
       op: body.op,
-      operaciones: body.operaciones,
-      tiempo: body.tiempo
-    }
+      tiempo: body.tiempo, // tiempo de la referencia
+      operaciones: {
+        create: body.operaciones.map((op: any) => ({
+          nombre: op.nombre,
+          tiempo: op.tiempo,   // tiempo de la operación
+          maquina: op.maquina,
+        })),
+      },
+    },
+    include: { operaciones: true },
   });
   return NextResponse.json(nueva);
 }
+

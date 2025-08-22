@@ -23,14 +23,12 @@ export default function ModalEditarReferencia({
 }: ModalEditarReferenciaProps) {
   const [referencia, setReferencia] = useState("");
   const [op, setOp] = useState("");
-  const [operaciones, setOperaciones] = useState("");
   const [tiempo, setTiempo] = useState("");
 
   useEffect(() => {
     if (referenciaData) {
       setReferencia(referenciaData.referencia.toString());
       setOp(referenciaData.op.toString());
-      setOperaciones(referenciaData.operaciones.toString());
       setTiempo(referenciaData.tiempo.toString());
     }
   }, [referenciaData]);
@@ -43,7 +41,6 @@ export default function ModalEditarReferencia({
         body: JSON.stringify({
           referencia: parseInt(referencia),
           op: parseInt(op) || 0,
-          operaciones: parseInt(operaciones),
           tiempo: parseFloat(tiempo),
         }),
       });
@@ -85,16 +82,6 @@ export default function ModalEditarReferencia({
             value={op}
             onChange={(e) => setOp(e.target.value)}
             placeholder="OP"
-            className="border p-2 rounded w-full"
-          />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Número de operaciones*</label>
-          <input
-            type="number"
-            value={operaciones}
-            onChange={(e) => setOperaciones(e.target.value)}
-            placeholder="Número de operaciones"
             className="border p-2 rounded w-full"
           />
           </div>

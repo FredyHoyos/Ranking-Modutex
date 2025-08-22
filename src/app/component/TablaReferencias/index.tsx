@@ -1,27 +1,26 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
 
 interface Referencia {
   id: number;
   referencia: number;
   op: number;
-  operaciones: number;
   tiempo: number;
   mostrar: boolean;
 }
 
 interface TablaReferenciasProps {
   data: Referencia[];
-  onEdit: (ref: Referencia) => void;
+  onEdit: (ref: Referencia) => void; 
   onDelete: (id: number) => void;
-  onToggleMostrar: (id: number, value: boolean) => void; // 👈 nuevo prop
+  onToggleMostrar: (id: number, value: boolean) => void;
 }
 
 export default function TablaReferencias({
   data,
-  onEdit,
   onDelete,
   onToggleMostrar,
 }: TablaReferenciasProps) {
@@ -40,7 +39,6 @@ export default function TablaReferencias({
           <tr className="bg-orange-500 text-white text-sm uppercase tracking-wider">
             <th className="p-3 text-left">Referencia</th>
             <th className="p-3 text-left">OP</th>
-            <th className="p-3 text-center"># Operaciones</th>
             <th className="p-3 text-center">Tiempo (min)</th>
             <th className="p-3 text-center">Mostrar</th>
             <th className="p-3 text-center">Acciones</th>
@@ -54,26 +52,24 @@ export default function TablaReferencias({
             >
               <td className="p-3">{ref.referencia}</td>
               <td className="p-3">{ref.op}</td>
-              <td className="p-3 text-center">{ref.operaciones}</td>
               <td className="p-3 text-center">{ref.tiempo.toFixed(2)}</td>
               <td className="p-3 text-center">
                 <input
                   type="checkbox"
                   checked={ref.mostrar}
-                  onChange={(e) =>
-                    onToggleMostrar(ref.id, e.target.checked) // 👈 cambia DB
-                  }
+                  onChange={(e) => onToggleMostrar(ref.id, e.target.checked)}
                   className="cursor-pointer"
                 />
               </td>
               <td className="p-3 text-center flex justify-center gap-3">
-                <button
-                  onClick={() => onEdit(ref)}
+                {/* 🚀 Editar abre la página correspondiente */}
+                <Link
+                  href={`/dashboard/references/${ref.id}/edit`}
                   className="cursor-pointer p-2 rounded hover:bg-orange-100 text-orange-600"
                   title="Editar"
                 >
                   <Pencil1Icon className="w-6 h-6" />
-                </button>
+                </Link>
                 <button
                   onClick={() => onDelete(ref.id)}
                   className="cursor-pointer p-2 rounded hover:bg-red-100 text-red-600"
