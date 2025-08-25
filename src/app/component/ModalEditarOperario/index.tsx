@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import * as Yup from "yup";
+import {toast } from 'react-toastify';
 
 interface ModalEditarOperarioProps {
   isOpen: boolean;
@@ -15,6 +17,18 @@ interface ModalEditarOperarioProps {
   } | null;
 }
 
+const schema = Yup.object().shape({
+  nombre: Yup.string().required("El nombre es obligatorio"),
+  numeroId: Yup.string().required("El número de ID es obligatorio"),
+  porcentaje: Yup.number()
+    .typeError("El porcentaje debe ser un número")
+    .min(0, "El porcentaje no puede ser menor que 0")
+    .max(100, "El porcentaje no puede ser mayor que 100")
+    .required("El porcentaje es obligatorio"),
+  username: Yup.string().required("El usuario es obligatorio"),
+  password: Yup.string(), // opcional
+});
+
 export default function ModalEditarOperario({
   isOpen,
   onClose,
@@ -26,6 +40,7 @@ export default function ModalEditarOperario({
   const [porcentaje, setPorcentaje] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
     if (operarioData) {
@@ -34,39 +49,72 @@ export default function ModalEditarOperario({
       setPorcentaje(operarioData.porcentaje.toString());
       setUsername(operarioData.username);
       setPassword(""); // ⚠️ siempre vacío
+      setErrors({});
     }
   }, [operarioData]);
 
   const handleSubmit = async () => {
-    try {
-      // Construir objeto de actualización
-      const updates: any = {
-        nombre,
-        numeroId,
-        porcentaje: parseInt(porcentaje) || 0,
-        username,
-      };
+      try {
+        setErrors({}); // resetear errores
 
-      // Solo incluir password si se escribió algo
-      if (password.trim() !== "") {
-        updates.password = password;
+        // validar antes de enviar
+        await schema.validate(
+          {
+            nombre,
+            numeroId,
+            porcentaje: Number(porcentaje),
+            username,
+            password,
+          },
+          { abortEarly: false }
+        );
+
+        // Construir objeto de actualización
+        const updates: any = {
+          nombre,
+          numeroId,
+          porcentaje: Number(porcentaje) || 0,
+          username,
+        };
+
+        if (password.trim() !== "") {
+          updates.password = password;
+        }
+
+        let res: Response;
+        try {
+          res = await fetch(`/api/operarios/${operarioData?.id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(updates),
+          });
+        } catch (error) {
+          toast.error("Error al conectar con el servidor.");
+          return;
+        }
+
+        if (!res.ok) {
+          toast.error("Error actualizando operario.");
+          return;
+        }
+
+        toast.success("Operario actualizado con éxito");
+        onSaved();
+        onClose();
+      } catch (error: any) {
+        if (error.name === "ValidationError") {
+          const newErrors: { [key: string]: string } = {};
+          error.inner.forEach((e: any) => {
+            if (e.path) newErrors[e.path] = e.message;
+          });
+          setErrors(newErrors);
+        } else {
+          console.error(error);
+          toast.error("Error guardando operario.");
+        }
       }
+    };
 
-      const res = await fetch(`/api/operarios/${operarioData?.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updates),
-      });
-
-      if (!res.ok) throw new Error("Error actualizando operario");
-
-      onSaved(); // refrescar lista
-      onClose(); // cerrar modal
-    } catch (error) {
-      console.error(error);
-      alert("Error guardando operario");
-    }
-  };
 
   if (!isOpen) return null;
 
@@ -89,6 +137,9 @@ export default function ModalEditarOperario({
               placeholder="Nombre del operario"
               className="border p-2 rounded w-full"
             />
+            {errors.nombre && (
+              <p className="text-red-500 text-sm mt-1">{errors.nombre}</p>
+            )}
           </div>
 
           <div>
@@ -102,6 +153,9 @@ export default function ModalEditarOperario({
               placeholder="123456"
               className="border p-2 rounded w-full"
             />
+            {errors.numeroId && (
+              <p className="text-red-500 text-sm mt-1">{errors.numeroId}</p>
+            )}
           </div>
 
           <div>
@@ -115,6 +169,9 @@ export default function ModalEditarOperario({
               placeholder="0"
               className="border p-2 rounded w-full"
             />
+            {errors.porcentaje && (
+              <p className="text-red-500 text-sm mt-1">{errors.porcentaje}</p>
+            )}
           </div>
 
           <div>
@@ -125,9 +182,12 @@ export default function ModalEditarOperario({
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="joperario"
+              placeholder="operario"
               className="border p-2 rounded w-full"
             />
+            {errors.username && (
+              <p className="text-red-500 text-sm mt-1">{errors.username}</p>
+            )}
           </div>
 
           <div>
@@ -141,6 +201,9 @@ export default function ModalEditarOperario({
               placeholder="Dejar vacío para no cambiar"
               className="border p-2 rounded w-full"
             />
+            {errors.password && (
+              <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+            )}
           </div>
         </div>
 

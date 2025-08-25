@@ -34,7 +34,7 @@ export default function TablaOperarios({
     <div className="overflow-x-auto">
       <table className="w-full border-collapse bg-white shadow-md rounded-lg overflow-hidden">
         <thead>
-          <tr className="bg-blue-500 text-white text-sm uppercase tracking-wider">
+          <tr className="bg-primary text-white text-sm uppercase tracking-wider">
             <th className="p-3 text-left">Nombre</th>
             <th className="p-3 text-left">Número ID</th>
             <th className="p-3 text-center">% de trabajo</th>

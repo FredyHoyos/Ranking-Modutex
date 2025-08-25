@@ -22,6 +22,7 @@ export async function POST(req: Request) {
         create: body.operaciones.map((op: any) => ({
           nombre: op.nombre,
           tiempo: op.tiempo,   // tiempo de la operación
+          precio: op.precio,   // precio de la operación
           maquina: op.maquina,
         })),
       },

@@ -36,7 +36,7 @@ export default function TablaReferencias({
     <div className="overflow-x-auto">
       <table className="w-full border-collapse bg-white shadow-md rounded-lg overflow-hidden">
         <thead>
-          <tr className="bg-orange-500 text-white text-sm uppercase tracking-wider">
+          <tr className="bg-primary text-white text-sm uppercase tracking-wider">
             <th className="p-3 text-left">Referencia</th>
             <th className="p-3 text-left">OP</th>
             <th className="p-3 text-center">Tiempo (min)</th>

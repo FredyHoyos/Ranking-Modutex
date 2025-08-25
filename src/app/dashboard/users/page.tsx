@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import TablaOperarios from "@/app/component/TablaOperarios";
 import ModalOperario from "@/app/component/ModalOperario";
 import ModalEditarOperario from "@/app/component/ModalEditarOperario";
+import { toast } from "react-toastify";
 
 // ✅ Tipo para la UI (tabla y modales)
 interface OperarioUI {
@@ -48,7 +49,7 @@ export default function PageOperarios() {
 
       setOperarios(formatted);
     } catch (error) {
-      console.error("Error cargando operarios:", error);
+      toast.error("Error cargando operarios");
     }
   };
 
@@ -56,33 +57,20 @@ export default function PageOperarios() {
   const eliminarOperario = async (id: number) => {
     if (!confirm("¿Seguro que quieres eliminar este operario?")) return;
 
+    const toastId = toast.loading("Eliminando operario...");
     try {
       const res = await fetch(`/api/operarios/${id}`, { method: "DELETE" });
-      if (!res.ok) throw new Error("Error eliminando operario");
+      if (!res.ok) {
+        toast.update(toastId, { render: "Error eliminando operario", type: "error", isLoading: false, autoClose: 3000 });
+        return;
+      }
       fetchOperarios();
-    } catch (error) {
-      console.error(error);
-      alert("No se pudo eliminar el operario");
+      toast.update(toastId, { render: "Operario eliminado con éxito", type: "success", isLoading: false, autoClose: 3000 });
+    } catch {
+      toast.update(toastId, { render: "No se pudo eliminar el operario", type: "error", isLoading: false, autoClose: 3000 });
     }
   };
 
-  // 🔹 Editar porcentaje u otros campos
-  const actualizarOperario = async (id: number, updates: Partial<OperarioUI>) => {
-    try {
-      const res = await fetch(`/api/operarios/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updates),
-      });
-
-      if (!res.ok) throw new Error("Error actualizando operario");
-
-      fetchOperarios(); // refrescar lista
-    } catch (error) {
-      console.error(error);
-      alert("No se pudo actualizar el operario");
-    }
-  };
 
   useEffect(() => {
     fetchOperarios();
@@ -95,7 +83,7 @@ export default function PageOperarios() {
 
         <button
           onClick={() => setIsModalOpen(true)}
-          className="mb-4 px-5 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+          className="mb-4 px-5 py-3 bg-secondary text-white rounded-lg hover:bg-blue-600"
         >
           ➕ Agregar operario
         </button>

@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "public"."Referencia" ADD COLUMN     "precio" DOUBLE PRECISION NOT NULL DEFAULT 0.0,
+ALTER COLUMN "tiempo" SET DEFAULT 0.0;

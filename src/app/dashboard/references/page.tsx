@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import TablaReferencias from "@/app/component/TablaReferencias";
 import Link from "next/link";
+import { toast } from "react-toastify";
 
 interface Operacion {
   id: number;
@@ -32,7 +33,7 @@ export default function PageReferencias() {
       const data = await res.json();
       setReferencias(data);
     } catch (error) {
-      console.error("Error cargando referencias:", error);
+      toast.error("Error cargando referencias");
     } finally {
       setLoading(false);
     }
@@ -43,10 +44,12 @@ export default function PageReferencias() {
     try {
       const res = await fetch(`/api/referencias/${id}`, { method: "DELETE" });
       if (!res.ok) throw new Error("Error eliminando referencia");
+
+      toast.success("Referencia eliminada con éxito");
       fetchReferencias();
     } catch (error) {
       console.error(error);
-      alert("No se pudo eliminar la referencia");
+      toast.error("No se pudo eliminar la referencia");
     }
   };
 
@@ -59,10 +62,10 @@ export default function PageReferencias() {
       });
 
       if (!res.ok) throw new Error("Error actualizando referencia");
+      toast.success("Referencia actualizada con éxito");
       fetchReferencias();
     } catch (error) {
-      console.error(error);
-      alert("No se pudo actualizar el estado");
+      toast.error("No se pudo actualizar la referencia");
     }
   };
 
@@ -80,7 +83,7 @@ export default function PageReferencias() {
         {/* 🚀 Ahora redirige a la page de creación */}
         <Link
           href="/dashboard/references/new"
-          className="px-5 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600"
+          className="px-5 py-3 bg-secondary text-white rounded-lg"
         >
           ➕ Agregar referencia
         </Link>

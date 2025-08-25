@@ -3,10 +3,12 @@
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { TrashIcon } from "@radix-ui/react-icons";
+import { toast } from "react-toastify";
 
 interface Operacion {
   nombre: string;
   tiempo: number | "";
+  precio: number | "";
   maquina: string;
 }
 
@@ -18,6 +20,7 @@ export default function EditarReferenciaPage() {
   const [referencia, setReferencia] = useState("");
   const [op, setOp] = useState("");
   const [tiempo, setTiempo] = useState("");
+  const [precio, setPrecio] = useState("");
   const [operaciones, setOperaciones] = useState<Operacion[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -30,6 +33,7 @@ export default function EditarReferenciaPage() {
       setReferencia(String(data.referencia));
       setOp(String(data.op));
       setTiempo(String(data.tiempo));
+      setPrecio(String(data.precio));
       setOperaciones(data.operaciones || []);
       setLoading(false);
     };
@@ -38,7 +42,7 @@ export default function EditarReferenciaPage() {
   }, [id]);
 
   const addOperacion = () =>
-    setOperaciones([...operaciones, { nombre: "", tiempo: "", maquina: "" }]);
+    setOperaciones([...operaciones, { nombre: "", tiempo: "", precio: "", maquina: "" }]);
 
   const removeOperacion = (i: number) =>
     setOperaciones(operaciones.filter((_, idx) => idx !== i));
@@ -49,7 +53,7 @@ export default function EditarReferenciaPage() {
     value: string
   ) => {
     const nuevas = [...operaciones];
-    if (field === "tiempo") {
+    if (field === "tiempo" || field === "precio") {
       nuevas[i][field] = value === "" ? "" : Number(value);
     } else {
       nuevas[i][field] = value;
@@ -64,16 +68,28 @@ export default function EditarReferenciaPage() {
       referencia: Number(referencia),
       op: Number(op),
       tiempo: Number(tiempo),
+      precio: Number(precio),
       operaciones,
     };
 
-    await fetch(`/api/referencias/${id}`, {
-      method: "PUT",
-      body: JSON.stringify(body),
-      headers: { "Content-Type": "application/json" },
-    });
+    
+  try {
+      const res = await fetch(`/api/referencias/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(body),
+        headers: { "Content-Type": "application/json" },
+      });
 
-    router.push("/dashboard/references");
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || "No se pudo actualizar la referencia");
+      }
+
+      toast.success("Referencia actualizada con éxito");
+      router.push("/dashboard/references");
+    } catch (error: any) {
+      toast.error(error.message || "Error al actualizar la referencia");
+    }
   };
 
   if (loading) return <p className="p-6">Cargando...</p>;
@@ -109,6 +125,12 @@ export default function EditarReferenciaPage() {
 
         <div>
           <h2 className="font-semibold mb-2">Operaciones</h2>
+          <div className="flex gap-32 font-medium mb-2">
+            <h2>Nombre Operación*</h2>
+            <h2>Tiempo (min)*</h2>
+            <h2>Precio*</h2>
+            <h2>Máquina</h2>
+          </div>
           {operaciones.map((operacion, i) => (
             <div key={i} className="flex flex-wrap gap-2 mb-2">
               <input
@@ -123,6 +145,14 @@ export default function EditarReferenciaPage() {
                 value={operacion.tiempo}
                 onChange={(e) => updateOperacion(i, "tiempo", e.target.value)}
                 placeholder="Tiempo (min)"
+                className="border p-2 rounded-md"
+                required
+              />
+              <input
+                type="number"
+                value={operacion.precio}
+                onChange={(e) => updateOperacion(i, "precio", e.target.value)}
+                placeholder="Precio"
                 className="border p-2 rounded-md"
                 required
               />
@@ -145,7 +175,7 @@ export default function EditarReferenciaPage() {
           <button
             type="button"
             onClick={addOperacion}
-            className="bg-green-500 text-white px-4 py-1 rounded"
+            className="cursor-pointer bg-secondary text-white px-4 py-1 rounded"
           >
             + Agregar Operación
           </button>
@@ -153,7 +183,7 @@ export default function EditarReferenciaPage() {
 
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded"
+          className="cursor-pointer bg-primary text-white px-4 py-2 rounded"
         >
           Guardar Cambios
         </button>

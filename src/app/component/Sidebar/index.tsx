@@ -29,7 +29,7 @@ export default function Sidebar() {
     <>
       {/* Botón hamburguesa visible solo en móvil */}
       <button
-        className="md:hidden fixed top-4 left-4 z-50 p-2 bg-orange-500 text-white rounded shadow-lg"
+        className="md:hidden fixed top-4 left-4 z-50 p-2 bg-primary text-white rounded shadow-lg"
         onClick={() => setIsOpen(!isOpen)}
       >
         {isOpen ? <Cross1Icon className="w-6 h-6" /> : <HamburgerMenuIcon className="w-6 h-6" />}
@@ -52,8 +52,8 @@ export default function Sidebar() {
               href={link.href}
               className={`flex items-center gap-2 px-2 py-1 rounded transition ${
                 pathname === link.href
-                  ? "text-white bg-orange-500 font-semibold"
-                  : "hover:text-orange-500"
+                  ? "text-white bg-primary font-semibold"
+                  : "hover:text-blue-600"
               }`}
               onClick={() => setIsOpen(false)}
             >

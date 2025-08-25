@@ -17,6 +17,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
           create: body.operaciones.map((op: any) => ({
             nombre: op.nombre,
             tiempo: op.tiempo,
+            precio: op.precio,
             maquina: op.maquina,
           })),
         },

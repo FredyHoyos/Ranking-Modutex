@@ -1,12 +1,25 @@
 "use client";
 
 import React, { useState } from "react";
+import {toast } from 'react-toastify';
+import * as Yup from "yup";
 
 interface ModalOperarioProps {
   isOpen: boolean;
   onClose: () => void;
   onSaved: () => void; // ✅ para recargar lista
 }
+
+  const schema = Yup.object().shape({
+  nombre: Yup.string().required("El nombre es obligatorio"),
+  numeroId: Yup.string().required("El número de identificación es obligatorio"),
+  porcentaje: Yup.number()
+    .required("El porcentaje es obligatorio")
+    .min(0, "El porcentaje no puede ser menor a 0")
+    .max(100, "El porcentaje no puede ser mayor a 100"),
+  username: Yup.string().required("El usuario es obligatorio"),
+  password: Yup.string().required("La contraseña es obligatoria"),
+});
 
 export default function ModalOperario({
   isOpen,
@@ -18,27 +31,43 @@ export default function ModalOperario({
   const [porcentaje, setPorcentaje] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+
 
   const handleSubmit = async () => {
-    if (!nombre || !numeroId || !username || !password) {
-      alert("Todos los campos obligatorios deben ser completados");
-      return;
-    }
 
     try {
+            setErrors({}); // resetear errores
+    // Validar campos obligatorios
+            await schema.validate(
+          {
+            nombre,
+            numeroId,
+            porcentaje: Number(porcentaje) || 0,
+            username,
+            password,
+          },
+          { abortEarly: false }
+        );
+
       const res = await fetch("/api/operarios", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           nombre,
           numeroId,
-          porcentaje: parseInt(porcentaje) || 0,
+          porcentaje: Number(porcentaje),
           username,
           password, // ⚠️ sin encriptar
         }),
       });
 
-      if (!res.ok) throw new Error("Error al guardar operario");
+      if (!res.ok) {
+                toast.error("Error actualizando operario.");
+                return;
+              }
+      toast.success("Operario guardado con éxito");
 
       onSaved(); // ✅ refrescar lista
       onClose(); // cerrar modal
@@ -47,9 +76,18 @@ export default function ModalOperario({
       setPorcentaje("");
       setUsername("");
       setPassword("");
-    } catch (error) {
-      console.error("Error guardando operario:", error);
-    }
+    } catch (error: any) {
+            if (error.name === "ValidationError") {
+              const newErrors: { [key: string]: string } = {};
+              error.inner.forEach((e: any) => {
+                if (e.path) newErrors[e.path] = e.message;
+              });
+              setErrors(newErrors);
+            } else {
+              console.error(error);
+              toast.error("Error guardando operario.");
+            }
+          }
   };
 
   if (!isOpen) return null;
@@ -73,6 +111,10 @@ export default function ModalOperario({
               onChange={(e) => setNombre(e.target.value)}
               className="border p-2 rounded w-full"
             />
+            {errors.nombre && (
+              <p className="text-red-500 text-xs mt-1">{errors.nombre}</p>
+            )}
+            
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -85,6 +127,9 @@ export default function ModalOperario({
               onChange={(e) => setNumeroId(e.target.value)}
               className="border p-2 rounded w-full"
             />
+            {errors.numeroId && (
+              <p className="text-red-500 text-xs mt-1">{errors.numeroId}</p>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -97,6 +142,9 @@ export default function ModalOperario({
               onChange={(e) => setPorcentaje(e.target.value)}
               className="border p-2 rounded w-full"
             />
+            {errors.porcentaje && (
+              <p className="text-red-500 text-xs mt-1">{errors.porcentaje}</p>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -105,22 +153,28 @@ export default function ModalOperario({
             <input
               type="text"
               value={username}
-              placeholder="joperario"
+              placeholder="operario"
               onChange={(e) => setUsername(e.target.value)}
               className="border p-2 rounded w-full"
             />
+            {errors.username && (
+              <p className="text-red-500 text-xs mt-1">{errors.username}</p>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Contraseña*
             </label>
             <input
-              type="text"
+              type="password"
               value={password}
               placeholder="******"
               onChange={(e) => setPassword(e.target.value)}
               className="border p-2 rounded w-full"
             />
+            {errors.password && (
+              <p className="text-red-500 text-xs mt-1">{errors.password}</p>
+            )}
           </div>
         </div>
 

@@ -3,10 +3,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { TrashIcon } from "@radix-ui/react-icons";
+import { toast } from "react-toastify";
 
 interface Operacion {
   nombre: string;
   tiempo: number | "";
+  precio: number | "";
   maquina: string;
 }
 
@@ -18,14 +20,14 @@ export default function CrearReferenciaPage() {
   const [operaciones, setOperaciones] = useState<Operacion[]>([]);
 
   const addOperacion = () =>
-    setOperaciones([...operaciones, { nombre: "", tiempo: "", maquina: "" }]);
+    setOperaciones([...operaciones, { nombre: "", tiempo: "", precio: "", maquina: "" }]);
 
   const removeOperacion = (i: number) =>
     setOperaciones(operaciones.filter((_, idx) => idx !== i));
 
   const updateOperacion = (i: number, field: keyof Operacion, value: string) => {
     const nuevas = [...operaciones];
-    if (field === "tiempo") {
+    if (field === "tiempo" || field === "precio") {
       nuevas[i][field] = Number(value);
     } else {
       nuevas[i][field] = value;
@@ -43,13 +45,23 @@ export default function CrearReferenciaPage() {
       operaciones,
     };
 
-    await fetch("/api/referencias", {
-      method: "POST",
-      body: JSON.stringify(body),
-      headers: { "Content-Type": "application/json" },
-    });
+      try {
+      const res = await fetch("/api/referencias", {
+        method: "POST",
+        body: JSON.stringify(body),
+        headers: { "Content-Type": "application/json" },
+      });
 
-    router.push("/dashboard/references");
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || "No se pudo guardar la referencia");
+      }
+
+      toast.success("Referencia creada con éxito");
+      router.push("/dashboard/references");
+    } catch (error: any) {
+      toast.error(error.message || "Error al guardar la referencia");
+    }
   };
 
   return (
@@ -102,6 +114,14 @@ export default function CrearReferenciaPage() {
                 required
               />
               <input
+                type="number"
+                value={operacion.precio}
+                onChange={(e) => updateOperacion(i, "precio", e.target.value)}
+                placeholder="Precio"
+                className="border p-2 rounded-md"
+                required
+              />
+              <input
                 value={operacion.maquina}
                 onChange={(e) => updateOperacion(i, "maquina", e.target.value)}
                 placeholder="Máquina"
@@ -120,7 +140,7 @@ export default function CrearReferenciaPage() {
           <button
             type="button"
             onClick={addOperacion}
-            className="bg-green-500 text-white px-4 py-1 rounded"
+            className="bg-secondary text-white px-4 py-1 rounded"
           >
             + Agregar Operación
           </button>
@@ -128,7 +148,7 @@ export default function CrearReferenciaPage() {
 
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded"
+          className="bg-primary text-white px-4 py-2 rounded"
         >
           Guardar
         </button>
