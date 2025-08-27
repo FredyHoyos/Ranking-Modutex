@@ -31,7 +31,8 @@ export default function TablaOperarios({
   }
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto md:max-w-full max-w-[300px]">
+      <div className="md:max-h-[700px] max-h-[500px] overflow-y-auto rounded-lg shadow-md">
       <table className="w-full border-collapse bg-white shadow-md rounded-lg overflow-hidden">
         <thead>
           <tr className="bg-primary text-white text-sm uppercase tracking-wider">
@@ -55,7 +56,7 @@ export default function TablaOperarios({
               <td className="p-3 text-center flex justify-center gap-3">
                 <button
                   onClick={() => onEdit(op)}
-                  className="cursor-pointer p-2 rounded hover:bg-blue-100 text-blue-600"
+                  className="cursor-pointer p-2 rounded hover:bg-blue-100 text-orange-600"
                   title="Editar"
                 >
                   <Pencil1Icon className="w-6 h-6" />
@@ -72,6 +73,7 @@ export default function TablaOperarios({
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 }

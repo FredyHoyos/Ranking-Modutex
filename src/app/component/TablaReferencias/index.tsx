@@ -33,7 +33,8 @@ export default function TablaReferencias({
   }
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto md:max-w-full max-w-[300px]">
+      <div className="max-h-[700px] overflow-y-auto rounded-lg shadow-md">
       <table className="w-full border-collapse bg-white shadow-md rounded-lg overflow-hidden">
         <thead>
           <tr className="bg-primary text-white text-sm uppercase tracking-wider">
@@ -82,6 +83,7 @@ export default function TablaReferencias({
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 }

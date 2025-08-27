@@ -156,6 +156,7 @@ export default function ModalOperario({
               placeholder="operario"
               onChange={(e) => setUsername(e.target.value)}
               className="border p-2 rounded w-full"
+              autoComplete="off"
             />
             {errors.username && (
               <p className="text-red-500 text-xs mt-1">{errors.username}</p>
@@ -171,6 +172,7 @@ export default function ModalOperario({
               placeholder="******"
               onChange={(e) => setPassword(e.target.value)}
               className="border p-2 rounded w-full"
+              autoComplete="new-password"
             />
             {errors.password && (
               <p className="text-red-500 text-xs mt-1">{errors.password}</p>
