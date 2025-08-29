@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
 import TablaOperarios from "@/app/component/TablaOperarios";
 import ModalOperario from "@/app/component/ModalOperario";
 import ModalEditarOperario from "@/app/component/ModalEditarOperario";

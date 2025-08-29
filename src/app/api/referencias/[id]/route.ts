@@ -1,20 +1,28 @@
 import { prisma } from "@/libs/prisma";
 import { NextResponse } from "next/server";
 
+
+interface OperacionInput {
+  nombre: string;
+  tiempo: number;
+  precio: number;
+  maquina: string;
+}
 // PUT → editar referencia y operaciones
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const body = await req.json();
+    const { id } = await params;
 
     const actualizada = await prisma.referencia.update({
-      where: { id: Number(params.id) },
+      where: { id: Number(id) },
       data: {
         referencia: body.referencia,
         op: body.op,
         tiempo: body.tiempo,
         operaciones: {
           deleteMany: {}, // 👈 elimina todas las operaciones anteriores
-          create: body.operaciones.map((op: any) => ({
+          create: body.operaciones.map((op: OperacionInput) => ({
             nombre: op.nombre,
             tiempo: op.tiempo,
             precio: op.precio,
@@ -58,13 +66,14 @@ export async function DELETE(
 // PATCH → actualizar solo el campo "mostrar"
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const body = await req.json();
+    const { id } = await params;
 
     const updated = await prisma.referencia.update({
-      where: { id: Number(params.id) },
+      where: { id: Number(id) },
       data: { mostrar: body.mostrar },
     });
 
@@ -82,11 +91,12 @@ export async function PATCH(
 // GET → obtener referencia por id
 export async function GET(
   _: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const referencia = await prisma.referencia.findUnique({
-      where: { id: Number(params.id) },
+      where: { id: Number(id) },
       include: { operaciones: true },
     });
 

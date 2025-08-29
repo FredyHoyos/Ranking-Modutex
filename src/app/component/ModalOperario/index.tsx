@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import {toast } from 'react-toastify';
 import * as Yup from "yup";
+import { ValidationError } from "yup";
 
 interface ModalOperarioProps {
   isOpen: boolean;
@@ -76,18 +77,18 @@ export default function ModalOperario({
       setPorcentaje("");
       setUsername("");
       setPassword("");
-    } catch (error: any) {
-            if (error.name === "ValidationError") {
-              const newErrors: { [key: string]: string } = {};
-              error.inner.forEach((e: any) => {
-                if (e.path) newErrors[e.path] = e.message;
-              });
-              setErrors(newErrors);
-            } else {
-              console.error(error);
-              toast.error("Error guardando operario.");
-            }
-          }
+    } catch (err: unknown) {
+        if (err instanceof ValidationError) {
+          const newErrors: { [key: string]: string } = {};
+          err.inner.forEach((e: ValidationError) => {
+            if (e.path) newErrors[e.path] = e.message;
+          });
+          setErrors(newErrors);
+        } else {
+          console.error(err);
+          toast.error("Error guardando operario.");
+        }
+    }
   };
 
   if (!isOpen) return null;

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
 import TablaReferencias from "@/app/component/TablaReferencias";
 import Link from "next/link";
 import { toast } from "react-toastify";
@@ -75,7 +75,7 @@ export default function PageReferencias() {
       if (!res.ok) throw new Error("Error actualizando referencia");
       toast.success("Referencia actualizada con éxito");
       mutate();
-    } catch (error) {
+    } catch{
       toast.error("No se pudo actualizar la referencia");
     }
   };

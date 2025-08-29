@@ -87,8 +87,12 @@ export default function EditarReferenciaPage() {
 
       toast.success("Referencia actualizada con éxito");
       router.push("/dashboard/references");
-    } catch (error: any) {
-      toast.error(error.message || "Error al actualizar la referencia");
+    } catch (error: unknown) {
+      toast.error(
+        typeof error === "object" && error !== null && "message" in error
+          ? String((error as { message?: string }).message)
+          : "Error al actualizar la referencia"
+      );
     }
   };
 

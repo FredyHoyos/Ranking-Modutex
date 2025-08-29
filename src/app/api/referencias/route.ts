@@ -10,6 +10,13 @@ export async function GET() {
   return NextResponse.json(referencias);
 }
 
+
+interface OperacionInput {
+  nombre: string;
+  tiempo: number;
+  precio: number;
+  maquina: string;
+}
 // POST → agregar referencia
 export async function POST(req: Request) {
   const body = await req.json();
@@ -19,7 +26,7 @@ export async function POST(req: Request) {
       op: body.op,
       tiempo: body.tiempo, // tiempo de la referencia
       operaciones: {
-        create: body.operaciones.map((op: any) => ({
+        create: body.operaciones.map((op: OperacionInput) => ({
           nombre: op.nombre,
           tiempo: op.tiempo,   // tiempo de la operación
           precio: op.precio,   // precio de la operación

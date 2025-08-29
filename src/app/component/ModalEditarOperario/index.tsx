@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from "react";
 import * as Yup from "yup";
 import {toast } from 'react-toastify';
+import { ValidationError } from "yup";
+
 
 interface ModalEditarOperarioProps {
   isOpen: boolean;
@@ -15,6 +17,14 @@ interface ModalEditarOperarioProps {
     porcentaje: number;
     username: string;
   } | null;
+}
+
+interface OperarioUpdate {
+  nombre: string;
+  numeroId: string;
+  porcentaje: number;
+  username: string;
+  password?: string;
 }
 
 const schema = Yup.object().shape({
@@ -70,7 +80,7 @@ export default function ModalEditarOperario({
         );
 
         // Construir objeto de actualización
-        const updates: any = {
+        const updates: OperarioUpdate = {
           nombre,
           numeroId,
           porcentaje: Number(porcentaje) || 0,
@@ -88,7 +98,7 @@ export default function ModalEditarOperario({
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(updates),
           });
-        } catch (error) {
+        } catch {
           toast.error("Error al conectar con el servidor.");
           return;
         }
@@ -101,15 +111,15 @@ export default function ModalEditarOperario({
         toast.success("Operario actualizado con éxito");
         onSaved();
         onClose();
-      } catch (error: any) {
-        if (error.name === "ValidationError") {
+      } catch (err) {
+        if (err instanceof ValidationError) {
           const newErrors: { [key: string]: string } = {};
-          error.inner.forEach((e: any) => {
+          err.inner.forEach((e) => {
             if (e.path) newErrors[e.path] = e.message;
           });
           setErrors(newErrors);
         } else {
-          console.error(error);
+          console.error(err);
           toast.error("Error guardando operario.");
         }
       }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Container, Heading } from '@radix-ui/themes'
+import { Container} from '@radix-ui/themes'
 import SignupForm from '@/app/component/auth/SignupForm'
 
 export default function Register() {

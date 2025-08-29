@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
         <div className="flex flex-col min-h-screen w-full bg-gradient-to-br from-pink-100 via-orange-100 to-rose-200">
@@ -5,10 +7,13 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
             
                     {/* 📌 Logo */}
             <div className="md:w-1/2 flex justify-center items-center p-7">
-              <img
+              <Image
                 src="/modutex.png"
                 alt="Modutex Logo"
-                className="max-w-xs md:max-w-full h-auto object-contain"
+                width={900}
+                height={200}
+                className="max-w-xs md:max-w-full h-auto object-contain"  
+                priority            
               />
             </div>
             

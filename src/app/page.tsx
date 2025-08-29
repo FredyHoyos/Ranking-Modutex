@@ -1,5 +1,6 @@
 "use client";
 import SignIn from "@/app/auth/Login/page";
+import Image from "next/image";
 
 export default function Home() {
   return (
@@ -8,10 +9,13 @@ export default function Home() {
         
                 {/* 📌 Logo */}
         <div className="md:w-1/2 flex justify-center items-center p-7">
-          <img
+          <Image
             src="/modutex.png"
             alt="Modutex Logo"
+            width={900}
+            height={100}
             className="max-w-xs md:max-w-full h-auto object-contain"
+            priority
           />
         </div>
         

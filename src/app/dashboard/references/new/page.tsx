@@ -59,9 +59,13 @@ export default function CrearReferenciaPage() {
 
       toast.success("Referencia creada con éxito");
       router.push("/dashboard/references");
-    } catch (error: any) {
-      toast.error(error.message || "Error al guardar la referencia");
-    }
+    } catch (error : unknown) {
+        if (error instanceof Error) {
+         toast.error(error.message);
+        } else {
+          toast.error("Error al guardar la referencia");
+        }
+        }
   };
 
   return (
@@ -146,12 +150,22 @@ export default function CrearReferenciaPage() {
           </button>
         </div>
 
+        <div className="flex gap-2 justify-start">
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
+          >
+            Cancelar
+        </button>
+
         <button
           type="submit"
           className="bg-primary text-white px-4 py-2 rounded"
         >
           Guardar
         </button>
+        </div>
       </form>
     </div>
   );

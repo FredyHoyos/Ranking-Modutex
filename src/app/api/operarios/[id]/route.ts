@@ -3,16 +3,17 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 
 // ✅ PUT → editar operario completo (y su User asociado)
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(req: Request, context: { params: Promise<{ id: string }> }) {
   try {
     const body = await req.json();
+    const { id } = await context.params;
 
     if (body.password) {
       body.password = await bcrypt.hash(body.password, 10);
     }
 
     const actualizado = await prisma.operario.update({
-      where: { id: Number(params.id) },
+      where: { id: Number(id) },
       data: {
         numeroId: body.numeroId,
         porcentaje: body.porcentaje,
@@ -38,10 +39,11 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 }
 
 // ✅ DELETE → eliminar operario y su User asociado
-export async function DELETE(_: Request, { params }: { params: { id: string } }) {
+export async function DELETE(_: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const eliminado = await prisma.operario.delete({
-      where: { id: Number(params.id) },
+      where: { id: Number(id) },
       include: { user: true },
     });
 

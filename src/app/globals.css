@@ -7,6 +7,8 @@
   /* Gradiente primario: tonos sobrios */
   --color-primary-from: #6366F1; /* indigo-500 */
   --color-primary-to: #3B82F6;   /* blue-500 */
+  --color-primary-hover-from: #4338ca;
+  --color-primary-hover-to: #2563eb;
 
   /* Gradiente secundario: tonos serios complementarios */
   --color-secondary-from: #db2777; /* emerald-500 */
@@ -37,6 +39,15 @@ body {
     135deg,
     var(--color-primary-from),
     var(--color-primary-to)
+  );
+}
+
+/* Hover del gradiente primario */
+.bg-primary:hover {
+  background-image: linear-gradient(
+    135deg,
+    var(--color-primary-hover-from),
+    var(--color-primary-hover-to)
   );
 }
 
