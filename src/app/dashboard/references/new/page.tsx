@@ -59,8 +59,9 @@ export default function CrearReferenciaPage() {
       }
 
       toast.success("Referencia creada con éxito");
-      await mutate("/api/referencias");
-      
+      // Refresca la cache de referencias
+      await mutate("/api/references");
+
       router.push("/dashboard/references");
     } catch (error : unknown) {
         if (error instanceof Error) {

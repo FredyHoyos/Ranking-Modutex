@@ -87,7 +87,8 @@ export default function EditarReferenciaPage() {
       }
 
       toast.success("Referencia actualizada con éxito");
-      await mutate("/api/referencias");
+      // Refresca la cache de referencias
+      await mutate("/api/references");
 
       router.push("/dashboard/references");
     } catch (error: unknown) {
@@ -132,12 +133,6 @@ export default function EditarReferenciaPage() {
 
         <div>
           <h2 className="font-semibold mb-2">Operaciones</h2>
-          <div className="flex gap-32 font-medium mb-2">
-            <h2>Nombre Operación*</h2>
-            <h2>Tiempo (min)*</h2>
-            <h2>Precio*</h2>
-            <h2>Máquina</h2>
-          </div>
           {operaciones.map((operacion, i) => (
             <div key={i} className="flex flex-wrap gap-2 mb-2">
               <input
@@ -188,12 +183,21 @@ export default function EditarReferenciaPage() {
           </button>
         </div>
 
+
+        <div className="flex justify-end gap-3 mt-4">
+          <button
+            onClick={() => router.back()}
+            className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+          >
+            Cancelar
+          </button>
         <button
           type="submit"
           className="cursor-pointer bg-primary text-white px-4 py-2 rounded"
         >
           Guardar Cambios
         </button>
+        </div>
       </form>
     </div>
   );
