@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { TrashIcon } from "@radix-ui/react-icons";
 import { toast } from "react-toastify";
+import { mutate } from "swr";
 
 interface Operacion {
   nombre: string;
@@ -58,6 +59,8 @@ export default function CrearReferenciaPage() {
       }
 
       toast.success("Referencia creada con éxito");
+      await mutate("/api/referencias");
+      
       router.push("/dashboard/references");
     } catch (error : unknown) {
         if (error instanceof Error) {

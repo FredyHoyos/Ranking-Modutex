@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { TrashIcon } from "@radix-ui/react-icons";
 import { toast } from "react-toastify";
+import { mutate } from "swr";
 
 interface Operacion {
   nombre: string;
@@ -86,6 +87,8 @@ export default function EditarReferenciaPage() {
       }
 
       toast.success("Referencia actualizada con éxito");
+      await mutate("/api/referencias");
+
       router.push("/dashboard/references");
     } catch (error: unknown) {
       toast.error(
